@@ -11,15 +11,20 @@ Drop the script into any folder and double-click. No configuration required.
 
 ## Requirements
 
-Both tools must be installed on the machine. The script expects them at their default installation paths.
+Both tools must be installed on the machine:
 
-| Tool | Purpose | Install |
-|------|---------|---------|
-| [pandoc](https://pandoc.org/installing.html) | DOCX → Markdown | `winget install --id JohnMacFarlane.Pandoc` |
-| [LibreOffice](https://www.libreoffice.org/download/) | DOCX → PDF (with hyperlinks) | `winget install --id TheDocumentFoundation.LibreOffice` |
+| Tool | Purpose | Install | Expected location |
+|------|---------|---------|-------------------|
+| [Pandoc](https://pandoc.org/installing.html) | DOCX → Markdown | `winget install --id JohnMacFarlane.Pandoc` | `%LOCALAPPDATA%\Pandoc\pandoc.exe` |
+| [LibreOffice](https://www.libreoffice.org/download/) | DOCX → PDF (with hyperlinks) | `winget install --id TheDocumentFoundation.LibreOffice` | `C:\Program Files\LibreOffice\program\soffice.bin` |
 
-Pandoc must be on the system `PATH`. LibreOffice must be installed at the default path:
-`C:\Program Files\LibreOffice\`
+The script resolves Pandoc via `%LOCALAPPDATA%` (no PATH dependency) and expects LibreOffice at its default Program Files path.
+
+### Portability
+
+- **Across folders:** drop the `.bat` into any folder and double-click — it uses `%~dp0` to find `.docx` files relative to itself.
+- **Across machines:** install both dependencies via the `winget` commands above. The script uses `%LOCALAPPDATA%` for Pandoc, so it works for any Windows user without PATH changes.
+- **Folder names with special characters:** paths containing spaces, parentheses, or other special characters (e.g. `(mfd)`) are handled correctly via delayed expansion.
 
 ---
 
@@ -53,5 +58,5 @@ Hyperlinks in the source `.docx` are preserved as clickable links in both output
 ## Notes
 
 - Images embedded in `.docx` files are not extracted into the Markdown output.
-- The LibreOffice path is hardcoded to `C:\Program Files\LibreOffice\program\soffice.bin`. If LibreOffice is installed elsewhere, edit that path in the script.
+- The LibreOffice path is hardcoded to `C:\Program Files\LibreOffice\program\soffice.bin`. The Pandoc path is resolved via `%LOCALAPPDATA%\Pandoc\pandoc.exe`. If either tool is installed elsewhere, edit the corresponding path in the script.
 - The script does not recurse beyond one subfolder level by design.
